@@ -10,38 +10,30 @@
 
 using namespace std;
 
-void findMinNumOfCoins(int changeAmount){
-    int count = 0;
-    while(changeAmount != 0){
-        if(changeAmount % 100 != changeAmount){
-            changeAmount -= 100;
-            count++;
-        }
-        else if(changeAmount % 50 != changeAmount){
-            changeAmount -= 50;
-            count++;
-        }
-        else if(changeAmount % 25 != changeAmount){
-            changeAmount -= 25;
-            count++;
-        }
-        else if(changeAmount % 10 != changeAmount){
-            changeAmount -= 10;
-            count++;
-        }
-        else if(changeAmount % 5 != changeAmount){
-            changeAmount -= 5;
-            count++;
-        }
-        else{
-            changeAmount--;;
-            count++;
+int findMinNumOfCoins(int changeAmount, int coins[], int size){
+    if(changeAmount == 0) {
+        return 0;
+    }
+    //Since maximum number of coins is 1 cent coins, min is initialized to intiial changeAmount
+    int minimum = changeAmount;
+    for(int j=0; j<size; j++){
+        //If it's possible to subtract that count
+        if(changeAmount - coins[j] >= 0) {
+            //Recurse with the changeAmount/count after subtraction
+            int c = findMinNumOfCoins(changeAmount - coins[j], coins, size);
+            //If the current coin count is greater than the sub problem's coin count, increment the sub problem's coin count
+            if(minimum > c + 1) {
+                minimum = c + 1;
+            }
         }
     }
-    cout << "The minimum number of coins for this amount of change is " << count << "\n";
+    return minimum;
 }
 
 int main() {
-    int changeAmount = 67;
-    findMinNumOfCoins(changeAmount);
+    int changeAmount = 32;
+    int coins[6] = {100,50,25,10,5,1};
+    int size = sizeof(coins)/sizeof(*coins);
+    int min = findMinNumOfCoins(changeAmount, coins, size);
+    cout << "Minimum number of coins: " << min << "\n";
 }
